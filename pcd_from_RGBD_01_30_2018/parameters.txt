@@ -1,0 +1,32 @@
+# image_Path=/media/jin/LingqiuHD/F200_GT/F200RPY/F200DegreeMyImageRoll/03/
+# timestamp_Path=/media/jin/LingqiuHD/F200_GT/F200RPY/F200DegreeMyImageRoll/03/timestamp.txt
+# output_Path=/home/jin/Desktop/pcd/
+# Camera.fx=621.94176
+# Camera.fy=625.35610
+# Camera.cx=318.77554
+# Camera.cy=236.21507
+# DepthMapFactor=1000 
+
+
+
+image_Path=/home/jin/Desktop/DC/
+timestamp_Path=/home/jin/Desktop/DC/timestamp.txt
+output_Path=/home/jin/Desktop/pcd/
+Camera.fx=615.426
+Camera.fy=625.456
+Camera.cx=318.837
+Camera.cy=240.594
+DepthMapFactor=1.0
+
+
+# Camera.k1=-0.0771327
+# Camera.k2=0.0531668
+# Camera.p1=-0.000143888
+# Camera.p2=0.0017977
+# Camera.k3=0.0
+
+# Camera.width=640
+# Camera.height=480
+
+# DepthMapFactor=1.000 # for .exr opencv converts it into float values
+# #DepthMapFactor=1000 # for .png opencv converts it into 16-bit values
