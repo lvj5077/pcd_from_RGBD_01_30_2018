@@ -9,14 +9,15 @@
 
 
 
-image_Path=/media/jin/LingqiuHD/R200_airport/DC1/
-timestamp_Path=/media/jin/LingqiuHD/R200_airport/DC1/timestamp.txt
+image_Path=/home/jin/Desktop/DC/
+timestamp_Path=/home/jin/Desktop/DC/timestamp.txt
 output_Path=/home/jin/Desktop/pcd/
-Camera.fx=626.994
-Camera.fy=633.194
-Camera.cx=318.442
-Camera.cy=241.117
+Camera.fx=615.426
+Camera.fy=625.456
+Camera.cx=318.837
+Camera.cy=240.594
 DepthMapFactor=1.0
+
 
 # Camera.k1=-0.0771327
 # Camera.k2=0.0531668
