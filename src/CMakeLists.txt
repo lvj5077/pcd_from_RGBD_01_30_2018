@@ -12,11 +12,6 @@ FIND_PACKAGE( OpenCV REQUIRED )
 include_directories(/usr/include/eigen3)
 
 
-ADD_LIBRARY( generatePointCloud generatePointCloud.cpp )
-TARGET_LINK_LIBRARIES( generatePointCloud
-    ${OpenCV_LIBS} 
-    ${PCL_LIBRARIES} )
-
 ADD_EXECUTABLE( pcdFromRGBD pcdFromRGBD.cpp )
 TARGET_LINK_LIBRARIES( pcdFromRGBD
     generatePointCloud
