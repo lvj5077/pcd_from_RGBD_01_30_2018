@@ -8,7 +8,6 @@
 #include <typeinfo>
 
 #include "loadParameters.h"
-#include "generatePointCloud.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -18,8 +17,14 @@
 using namespace std;
 using namespace cv;
 
-Mat readFrame( int index, string imagePath, string groupName, string Ext );
-Mat readMatrix( string MaskString );
+
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+
+
+typedef pcl::PointXYZRGBA PointT;
+typedef pcl::PointCloud<PointT> PointCloud; 
+
 
 int main(int argc, char** argv)
 {
@@ -36,12 +41,11 @@ int main(int argc, char** argv)
     string timestamp_Path   = pd.getData( "timestamp_Path" );
     string output_Path      = pd.getData( "output_Path" );
 
-    CAMERA_INTRINSIC_PARAMETERS camera;
-    camera.fx       = atof( pd.getData( "Camera.fx" ).c_str());
-    camera.fy       = atof( pd.getData( "Camera.fy" ).c_str());
-    camera.cx       = atof( pd.getData( "Camera.cx" ).c_str());
-    camera.cy       = atof( pd.getData( "Camera.cy" ).c_str());
-    camera.scale    = atof( pd.getData( "DepthMapFactor" ).c_str() );
+    double camera_fx       = atof( pd.getData( "Camera.fx" ).c_str());
+    double camera_fy       = atof( pd.getData( "Camera.fy" ).c_str());
+    double camera_cx       = atof( pd.getData( "Camera.cx" ).c_str());
+    double camera_cy       = atof( pd.getData( "Camera.cy" ).c_str());
+    double camera_scale    = atof( pd.getData( "DepthMapFactor" ).c_str() );
 
 
     ifstream fAssociation(timestamp_Path.c_str() );
@@ -61,28 +65,43 @@ int main(int argc, char** argv)
             ss >> t_d;
             ss >> sD;
 
-            FRAME framePCD;
-
             string ssRGB = image_Path+sRGB;
             // cout << ssRGB <<endl;
-            framePCD.rgb = cv::imread( ssRGB, CV_LOAD_IMAGE_UNCHANGED);
 
             string ssDepth = image_Path+sD;
-            // cout << ssDepth <<endl;
-            framePCD.depth = cv::imread( ssDepth, CV_LOAD_IMAGE_UNCHANGED);
+            cout << ssDepth <<endl;
 
-            cv::Mat imD = cv::imread( ssDepth,  IMREAD_UNCHANGED);
-            for(int row = 0; row < imD.rows; row++)
 
-            {
-                for(int col = 0; col < imD.cols; col++)
+            cv::Mat rgb, depth;
+            rgb = cv::imread( ssRGB,  CV_LOAD_IMAGE_UNCHANGED);
+            depth = cv::imread( ssDepth,  CV_LOAD_IMAGE_UNCHANGED);
+
+            PointCloud::Ptr cloud ( new PointCloud );
+
+            for (int m = 0; m < depth.rows; m++)
+                for (int n=0; n < depth.cols; n++)
                 {
+                    ushort d = depth.ptr<ushort>(m)[n];
+                    if (d == 0)
+                        continue;
+                    PointT p;
 
-                     cout << imD.at<float>(row, col) << endl;
+                    p.z = double(d) / camera_scale;
+                    p.x = (n - camera_cx) * p.z / camera_fx ;
+                    p.y = (m - camera_cy) * p.z / camera_fy;
+                    
+ 
+                    p.b = rgb.ptr<uchar>(m)[n*3];
+                    p.g = rgb.ptr<uchar>(m)[n*3+1];
+                    p.r = rgb.ptr<uchar>(m)[n*3+2];
+
+                    cloud->points.push_back( p );
                 }
-            }
 
-            PointCloud::Ptr cloud = image2PointCloud( framePCD.rgb, framePCD.depth, camera );
+            cloud->height = 1;
+            cloud->width = cloud->points.size();
+            cout<<"point cloud size = "<<cloud->points.size()<<endl;
+            cloud->is_dense = false;
 
             string cloud_path;
             cloud_path = output_Path + sTimestamp + ".pcd";
