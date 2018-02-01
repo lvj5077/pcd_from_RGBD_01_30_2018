@@ -14,6 +14,6 @@ include_directories(/usr/include/eigen3)
 
 ADD_EXECUTABLE( pcdFromRGBD pcdFromRGBD.cpp )
 TARGET_LINK_LIBRARIES( pcdFromRGBD
-    generatePointCloud
+    # generatePointCloud
     ${OpenCV_LIBS} 
     ${PCL_LIBRARIES} )
